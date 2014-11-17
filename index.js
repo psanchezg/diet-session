@@ -4,7 +4,8 @@ var fs = require('fs');
 var path = require('path');
 var signature = require('cookie-signature');
 
-var options = module.parent.options || {};
+var options = module.parent.options || {},
+    session;
 
 var getCookie = function (cookie, secret) {
 	if (!cookie) {
@@ -19,8 +20,11 @@ var getCookie = function (cookie, secret) {
 };
 
 var setcookie = function ($, name, cookieid, secret) {
-  var signed = signature.sign(cookieid, secret);
-  debug('set-cookie %s', signed);
+    if (!$.cookies) {
+        return;
+    }
+    var signed = signature.sign(cookieid, secret);
+    debug('set-cookie %s', signed);
 	$.cookies.set(name, signed);
 };
 
@@ -30,7 +34,7 @@ var readSession = function (sid) {
 		stats = fs.statSync(options.dir);
 	} catch (err) {
 		// errno=2, 32: ENOENT, No such file or directory is not an error.
-	  if (err.errno != 2 && err.errno != 32 && err.errno != 34) throw err;
+        if (err.errno != 2 && err.errno != 32 && err.errno != 34) throw err;
 	}
 	if (!stats || !stats.isDirectory()) {
 		try {
@@ -40,7 +44,7 @@ var readSession = function (sid) {
 			debug("Creating", err.errno);
 			throw err;
 		}
-  }
+    }
 	
 	try {
 		data = fs.readFileSync(path.join(options.dir, sid + ".json"), 'UTF-8');
@@ -59,14 +63,14 @@ var Session = function ($) {
 	var name = options.name || options.key || 'diet.sid';
 
 	if (!options.secret) {
-    debug('provide secret option');
-  }
-
-	var sid = getCookie($.cookies[name], options.secret),
-			session = {
-				id: sid,
-				name: name
-			};
+        debug('provide secret option');
+        throw 'provide secret option';
+    }
+	var sid = ($.cookies ? getCookie($.cookies[name], options.secret) : uid(24)),
+		session = {
+			id: sid,
+			name: name
+		};
 
 	options.dir = options.dir || './sessions';
 	this.data = readSession(sid);
@@ -92,9 +96,12 @@ Session.prototype.destroy = function () {
     $.session.data = {};
 };
 
-// Cookie Handler Module
-module.exports.global = function($){
-	$.return(new Session($));
+// Session Handler Module
+module.exports.global = function ($) {
+    if (!session) {
+        session = new Session($);
+    }
+	$.return(session);
 };
 
 module.parent.return();
