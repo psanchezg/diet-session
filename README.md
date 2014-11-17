@@ -30,7 +30,7 @@ app.get('/', function($){
     console.log($.session.data)      // -> { user: 'guest' }
     
     // destroy session
-    $.cookies.destroy();
+    $.session.destroy();
     
     $.end()
 })
@@ -60,7 +60,7 @@ Parent path must exist before store session
 Clear session data and delete data file in filesystem
 ```js
 // api
-$.cookies.destroy()
+$.session.destroy()
 ```
 
 # MIT Licensed
