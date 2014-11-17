@@ -1,0 +1,36 @@
+{
+  "name": "diet-session",
+  "version": "0.0.1",
+  "description": "A filesystem session manager for diet.",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/psanchezg/diet-session"
+  },
+	"bugs": {
+    "url": "http://github.com/psanchezg/diet-session/issues",
+    "email": "psanchezg@gmail.com"
+  },
+  "keywords": [
+    "session",
+    "diet",
+    "diet.js",
+    "dietjs"
+  ],
+	"engines": {
+    "node": ">=0.8.21"
+  },
+	"author": {
+    "name": "Pablo Sánchez",
+    "email": "psanchezg@gmail.com"
+  },
+  "license": "MIT",
+	"dependencies": {
+    "debug": "~2.1.0",
+    "uid-safe": "~1.0.1",
+    "cookie-signature": "~1.0.5"
+  }
+}
