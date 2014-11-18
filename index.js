@@ -66,9 +66,8 @@ var Session = function ($) {
         debug('provide secret option');
         throw 'provide secret option';
     }
-	var sid = ($.cookies ? getCookie($.cookies[name], options.secret) : uid(24)),
-		session = {
-			id: sid,
+	var session = {
+			id: ($.cookies ? getCookie($.cookies[name], options.secret) : uid(24)),
 			name: name
 		};
 
@@ -93,7 +92,7 @@ Session.prototype.destroy = function () {
 	} catch (err) {
 		debug(err);
 	}
-    $.session.data = {};
+    this.data = {};
 };
 
 // Session Handler Module
