@@ -1,3 +1,6 @@
+/*jslint node: true */
+'use strict';
+
 var debug = require('debug')('diet-session');
 var uid = require('uid-safe').sync;
 var fs = require('fs');
@@ -34,51 +37,53 @@ var readSession = function (sid) {
 		stats = fs.statSync(options.dir);
 	} catch (err) {
 		// errno=2, 32: ENOENT, No such file or directory is not an error.
-        if (err.errno != 2 && err.errno != 32 && err.errno != 34) throw err;
+        if (err.errno !== 2 && err.errno !== 32 && err.errno !== 34) {
+            throw err;
+        }
 	}
 	if (!stats || !stats.isDirectory()) {
 		try {
-	    fs.mkdirSync(options.dir, 0755);
+            fs.mkdirSync(options.dir, 755);
 			debug('Created session directory');
-		} catch(err) {
-			debug("Creating", err.errno);
-			throw err;
+		} catch (mkerr) {
+			debug("Creating", mkerr.errno);
+			throw mkerr;
 		}
     }
 	
 	try {
 		data = fs.readFileSync(path.join(options.dir, sid + ".json"), 'UTF-8');
 		data = JSON.parse(data.toString());
-	} catch (err) {
-		debug('Session not stored');
+	} catch (serr) {
+		debug('Session not stored.', serr.message);
 		data = {};
 	}
 	return data;
 };
 
 var Session = function ($) {
-	this.__proto__.header = [];
-	this.__proto__.signal = $;
-	
-	var name = options.name || options.key || 'diet.sid';
+	//this.__proto__.header = [];
+	//this.__proto__.signal = $;
 
-	if (!options.secret) {
+    if (!options.secret) {
         debug('provide secret option');
         throw 'provide secret option';
     }
-	var session = {
+
+	var name = options.name || options.key || 'diet.sid',
+        session = {
 			id: ($.cookies ? getCookie($.cookies[name], options.secret) : uid(24)),
 			name: name
 		};
 
 	options.dir = options.dir || './sessions';
-	this.data = readSession(sid);
+	this.data = readSession(session.id);
 	this.session = session;
-	setcookie($, name, sid, options.secret);
+	setcookie($, name, session.id, options.secret);
 	return this;
 };
 
-Session.prototype.save = function(){
+Session.prototype.save = function () {
 	try {
 		fs.writeFileSync(path.join(options.dir, this.session.id + ".json"), JSON.stringify(this.data, null, 4));
 	} catch (err) {
@@ -100,7 +105,7 @@ module.exports.global = function ($) {
     if (!session) {
         session = new Session($);
     }
-	$.return(session);
+	$['return'](session);
 };
 
-module.parent.return();
+module.parent['return']();
