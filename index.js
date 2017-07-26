@@ -43,7 +43,7 @@ var readSession = function (sid) {
 	}
 	if (!stats || !stats.isDirectory()) {
 		try {
-            fs.mkdirSync(options.dir, 755);
+            fs.mkdirSync(options.dir, '0755');
 			debug('Created session directory');
 		} catch (mkerr) {
 			debug("Creating", mkerr.errno);
@@ -62,9 +62,6 @@ var readSession = function (sid) {
 };
 
 var Session = function ($) {
-	//this.__proto__.header = [];
-	//this.__proto__.signal = $;
-
     if (!options.secret) {
         debug('provide secret option');
         throw 'provide secret option';
