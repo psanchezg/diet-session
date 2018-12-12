@@ -1,6 +1,6 @@
 {
   "name": "diet-session",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A filesystem session manager for diet.",
   "main": "index.js",
   "scripts": {
