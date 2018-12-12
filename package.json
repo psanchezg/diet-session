@@ -1,6 +1,6 @@
 {
   "name": "diet-session",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A filesystem session manager for diet.",
   "main": "index.js",
   "scripts": {
@@ -29,7 +29,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "debug": ">=2.6.9",
+    "debug": "~3.2.6",
     "uid-safe": "~2.1.5",
     "cookie-signature": "~1.0.5"
   }
